@@ -1377,6 +1377,39 @@ const ESTADOS = [
   { key: 'fail', label: 'Fuera de servicio', emoji: '❌' }
 ];
 
+
+// ============================================================
+// JSONP HELPER — evita problemas de CORS con Apps Script
+// ============================================================
+function jsonp(url, timeout = 15000) {
+  return new Promise((resolve, reject) => {
+    const cbName = 'jsonpCb_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+    const sep = url.includes('?') ? '&' : '?';
+    const fullUrl = url + sep + 'callback=' + cbName;
+    const script = document.createElement('script');
+    const cleanup = () => {
+      try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+      if (script.parentNode) script.parentNode.removeChild(script);
+    };
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error('timeout'));
+    }, timeout);
+    window[cbName] = (data) => {
+      clearTimeout(timer);
+      cleanup();
+      resolve(data);
+    };
+    script.onerror = () => {
+      clearTimeout(timer);
+      cleanup();
+      reject(new Error('script error'));
+    };
+    script.src = fullUrl;
+    document.head.appendChild(script);
+  });
+}
+
 // ============================================================
 // STATE
 // ============================================================
@@ -1556,9 +1589,8 @@ async function lookupSerial(serie) {
   if (!match && localStorage.getItem('bioing_url')) {
     try {
       const url = localStorage.getItem('bioing_url') + '?action=lookup&serie=' + encodeURIComponent(serie);
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.ok && data.equipo) match = data.equipo;
+      const data = await jsonp(url, 10000);
+      if (data && data.ok && data.equipo) match = data.equipo;
     } catch (e) {}
   }
 
@@ -1821,17 +1853,17 @@ async function syncInventory() {
   if (!url) { toast('Configurá la URL primero', 'error'); return; }
   toast('Sincronizando inventario...');
   try {
-    const res = await fetch(url + '?action=inventory');
-    const data = await res.json();
-    if (data.ok && Array.isArray(data.items)) {
+    const data = await jsonp(url + '?action=inventory', 60000); // 60s para inventarios grandes
+    if (data && data.ok && Array.isArray(data.items)) {
       localStorage.setItem('bioing_inventory', JSON.stringify(data.items));
-      document.getElementById('inv-count').textContent = data.items.length;
+      const el = document.getElementById('inv-count');
+      if (el) el.textContent = data.items.length;
       toast(`${data.items.length} equipos sincronizados`, 'success');
     } else {
-      toast('Respuesta inesperada', 'error');
+      toast('Respuesta inesperada del servidor', 'error');
     }
   } catch (e) {
-    toast('Error al sincronizar', 'error');
+    toast('Error al sincronizar: ' + e.message, 'error');
   }
 }
 
@@ -1970,12 +2002,11 @@ async function testConnection() {
   const url = document.getElementById('cfg-url').value.trim();
   if (!url) { toast('Ingresá una URL', 'error'); return; }
   try {
-    const res = await fetch(url + '?ping=1');
-    const data = await res.json();
-    if (data.ok) toast('Conexión OK · ' + (data.sheet || ''), 'success');
-    else toast('Respuesta inesperada', 'error');
+    const data = await jsonp(url + '?ping=1');
+    if (data && data.ok) toast('Conexión OK · ' + (data.sheet || ''), 'success');
+    else toast('Respuesta inesperada del servidor', 'error');
   } catch (e) {
-    toast('No se pudo conectar', 'error');
+    toast('No se pudo conectar: ' + e.message, 'error');
   }
 }
 
