@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a3d62">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bioingeniería">
+<title>Inspección Bioingeniería</title>
+
+<link rel="manifest" href='data:application/manifest+json,{"name":"Inspección Bioingeniería","short_name":"Bioing.","start_url":".","display":"standalone","orientation":"portrait","background_color":"%230a3d62","theme_color":"%230a3d62","icons":[{"src":"data:image/svg%2Bxml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 192 192%22><rect width=%22192%22 height=%22192%22 fill=%22%230a3d62%22/><path d=%22M60 60h72v72H60z%22 fill=%22none%22 stroke=%22%23f5f0e6%22 stroke-width=%228%22/><path d=%22M96 70v52M70 96h52%22 stroke=%22%2300a878%22 stroke-width=%2210%22 stroke-linecap=%22round%22/></svg>","sizes":"192x192","type":"image/svg+xml"}]}'>
+
+<link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" fill="%230a3d62" rx="32"/><path d="M60 60h72v72H60z" fill="none" stroke="%23f5f0e6" stroke-width="8"/><path d="M96 70v52M70 96h52" stroke="%2300a878" stroke-width="10" stroke-linecap="round"/></svg>'>
+
+<style>
+:root {
+  --bg: #f5f0e6;
+  --bg-elevated: #fbf8f1;
+  --ink: #0a1f2e;
+  --ink-soft: #4a5a6a;
+  --line: #d8d0c0;
+  --primary: #0a3d62;
+  --primary-soft: #e8eef3;
+  --accent: #00a878;
+  --warning: #f59e0b;
+  --danger: #c53030;
+  --info: #2563eb;
+  --font-display: 'IBM Plex Serif', Georgia, serif;
+  --font-body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --tap: 48px;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600;700&family=IBM+Plex+Mono:wght@500&display=swap');
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: contain;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.topbar {
+  background: var(--primary);
+  color: var(--bg);
+  padding: max(16px, env(safe-area-inset-top)) 20px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 10;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+}
+.topbar .title { font-family: var(--font-display); font-weight: 600; font-size: 18px; letter-spacing: -0.01em; }
+.topbar .subtitle { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.65; margin-top: 2px; }
+.topbar .back {
+  background: rgba(255,255,255,0.1); border: none; color: var(--bg);
+  width: 38px; height: 38px; border-radius: 50%; font-size: 22px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  margin-right: 12px;
+}
+.topbar .back:active { background: rgba(255,255,255,0.2); }
+.topbar-row { display: flex; align-items: center; flex: 1; }
+.topbar-side { font-size: 11px; opacity: 0.7; font-family: var(--font-mono); }
+
+main { flex: 1; padding: 20px; padding-bottom: 100px; }
+
+.hero { text-align: center; padding: 30px 0 40px; }
+.hero .label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 8px; }
+.hero h1 { font-family: var(--font-display); font-weight: 600; font-size: 32px; line-height: 1.1; margin: 0; letter-spacing: -0.02em; }
+.hero h1 .accent { color: var(--accent); font-style: italic; }
+.hero p { margin: 12px 0 0; color: var(--ink-soft); font-size: 14px; }
+
+.family-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.family-card {
+  background: var(--bg-elevated); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 18px 14px; text-align: left; cursor: pointer;
+  transition: all 0.15s ease; display: flex; flex-direction: column; gap: 8px;
+  min-height: 120px; position: relative; overflow: hidden;
+}
+.family-card:active { transform: scale(0.98); background: var(--primary-soft); }
+.family-card .icon { width: 32px; height: 32px; color: var(--primary); }
+.family-card .name { font-family: var(--font-display); font-weight: 600; font-size: 16px; color: var(--ink); }
+.family-card .meta { font-size: 11px; color: var(--ink-soft); margin-top: auto; line-height: 1.4; }
+.family-card .code { position: absolute; top: 12px; right: 14px; font-family: var(--font-mono); font-size: 10px; color: var(--ink-soft); letter-spacing: 0.1em; }
+
+.section { margin-bottom: 28px; }
+.section-title {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--primary); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 12px; font-weight: 600; color: var(--ink-soft); margin-bottom: 6px; }
+.field label .required { color: var(--danger); }
+.field input, .field select, .field textarea {
+  width: 100%; min-height: var(--tap);
+  background: var(--bg-elevated); border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm); padding: 12px 14px;
+  font-size: 16px; font-family: var(--font-body); color: var(--ink);
+  -webkit-appearance: none; appearance: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus {
+  outline: none; border-color: var(--primary); background: white;
+}
+.field select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%230a3d62' stroke-width='2' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px;
+}
+.field textarea { min-height: 80px; resize: vertical; line-height: 1.5; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Search box for serial with autocomplete */
+.serial-search { position: relative; }
+.serial-search input { padding-right: 40px; }
+.serial-search .lookup-status {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  font-size: 11px; font-family: var(--font-mono); color: var(--ink-soft);
+}
+.serial-search .lookup-status .spinner-mini {
+  width: 14px; height: 14px; border: 2px solid var(--line);
+  border-top-color: var(--primary); border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Inventory match card */
+.inv-match {
+  background: linear-gradient(0deg, var(--primary-soft), var(--primary-soft));
+  border: 1.5px solid var(--primary);
+  border-radius: var(--radius);
+  padding: 14px; margin: 12px 0;
+}
+.inv-match.not-found { background: #fdecec; border-color: var(--danger); }
+.inv-match h4 {
+  margin: 0 0 8px 0; font-family: var(--font-display); font-size: 14px;
+  color: var(--primary); display: flex; align-items: center; gap: 6px;
+}
+.inv-match.not-found h4 { color: var(--danger); }
+.inv-match .row {
+  display: flex; justify-content: space-between; padding: 4px 0;
+  font-size: 13px; border-bottom: 1px dotted rgba(0,0,0,0.08);
+}
+.inv-match .row:last-child { border: none; }
+.inv-match .row .k { color: var(--ink-soft); }
+.inv-match .row .v { font-weight: 600; text-align: right; }
+.inv-match .actions {
+  display: flex; gap: 8px; margin-top: 12px;
+}
+.inv-match .actions button {
+  flex: 1; min-height: 40px; border-radius: var(--radius-sm);
+  font-family: var(--font-body); font-size: 13px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid;
+}
+.inv-match .btn-confirm {
+  background: var(--accent); color: white; border-color: var(--accent);
+}
+.inv-match .btn-change {
+  background: white; color: var(--primary); border-color: var(--primary);
+}
+
+.check-group { background: var(--bg-elevated); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; }
+.check-group-header {
+  padding: 12px 16px; background: var(--primary); color: var(--bg);
+  font-family: var(--font-display); font-weight: 600; font-size: 14px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.check-group-header .progress { font-family: var(--font-mono); font-size: 11px; opacity: 0.75; letter-spacing: 0.1em; }
+.check-item { padding: 12px 14px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }
+.check-item:last-child { border-bottom: none; }
+.check-item .label { font-size: 14px; line-height: 1.35; }
+.check-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.check-options button {
+  min-height: 40px; border: 1.5px solid var(--line); background: white;
+  border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 12px;
+  font-weight: 600; letter-spacing: 0.08em; color: var(--ink-soft); cursor: pointer;
+}
+.check-options button:active { transform: scale(0.97); }
+.check-options button.active[data-val="SI"] { background: var(--accent); border-color: var(--accent); color: white; }
+.check-options button.active[data-val="NO"] { background: var(--danger); border-color: var(--danger); color: white; }
+.check-options button.active[data-val="N/V"] { background: var(--ink-soft); border-color: var(--ink-soft); color: white; }
+
+.chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  background: var(--bg-elevated); border: 1.5px solid var(--line);
+  border-radius: 20px; padding: 8px 14px; font-size: 13px;
+  color: var(--ink); cursor: pointer; user-select: none;
+}
+.chip:active { transform: scale(0.97); }
+.chip.active { background: var(--primary); border-color: var(--primary); color: var(--bg); }
+
+.estado-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.estado-btn {
+  min-height: 64px; background: var(--bg-elevated); border: 2px solid var(--line);
+  border-radius: var(--radius); padding: 10px; font-size: 13px; font-weight: 600;
+  cursor: pointer; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 4px; text-align: center; line-height: 1.2;
+}
+.estado-btn .emoji { font-size: 22px; }
+.estado-btn.active.ok { background: var(--accent); border-color: var(--accent); color: white; }
+.estado-btn.active.warn { background: var(--warning); border-color: var(--warning); color: white; }
+.estado-btn.active.maint { background: var(--primary); border-color: var(--primary); color: white; }
+.estado-btn.active.fail { background: var(--danger); border-color: var(--danger); color: white; }
+
+.action-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--bg-elevated); border-top: 1px solid var(--line);
+  padding: 12px 20px max(12px, env(safe-area-inset-bottom));
+  display: flex; gap: 10px; z-index: 20; max-width: 480px; margin: 0 auto;
+}
+.btn {
+  flex: 1; min-height: var(--tap); border: none; border-radius: var(--radius-sm);
+  font-family: var(--font-body); font-size: 15px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:active { background: #008c64; }
+.btn-primary:disabled { background: #a0aab2; cursor: not-allowed; }
+.btn-secondary { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+
+.toast {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-150%);
+  background: var(--ink); color: var(--bg); padding: 12px 20px; border-radius: var(--radius);
+  font-size: 14px; font-weight: 500; z-index: 100; transition: transform 0.3s ease;
+  max-width: 90%; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { background: var(--accent); }
+.toast.error { background: var(--danger); }
+
+.spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.tabs { display: flex; gap: 0; background: var(--bg-elevated); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 4px; margin-bottom: 20px; }
+.tabs button { flex: 1; padding: 10px; background: transparent; border: none; font-family: var(--font-body); font-size: 13px; font-weight: 600; color: var(--ink-soft); cursor: pointer; border-radius: 4px; }
+.tabs button.active { background: var(--primary); color: var(--bg); }
+
+.config-page { padding: 20px; }
+.config-page .note {
+  background: var(--primary-soft); border-left: 3px solid var(--primary);
+  padding: 12px 14px; margin-bottom: 20px; border-radius: var(--radius-sm);
+  font-size: 13px; line-height: 1.5;
+}
+.config-page code { font-family: var(--font-mono); background: var(--bg); padding: 2px 6px; border-radius: 3px; font-size: 12px; word-break: break-all; }
+
+.history-item {
+  background: var(--bg-elevated); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 12px 14px; margin-bottom: 10px;
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+}
+.history-item .info { flex: 1; min-width: 0; }
+.history-item .equipo { font-weight: 600; font-size: 14px; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.history-item .meta { font-size: 11px; color: var(--ink-soft); font-family: var(--font-mono); }
+.history-item .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.status-dot.ok { background: var(--accent); }
+.status-dot.warn { background: var(--warning); }
+.status-dot.maint { background: var(--primary); }
+.status-dot.fail { background: var(--danger); }
+.status-dot.pending { background: var(--ink-soft); }
+
+.empty { text-align: center; padding: 60px 20px; color: var(--ink-soft); }
+.empty .icon { font-size: 48px; opacity: 0.4; margin-bottom: 12px; }
+
+.needs-manual {
+  background: #fff5e6;
+  border: 2px dashed var(--warning);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-top: 8px;
+  position: relative;
+}
+.needs-manual::before {
+  content: 'Completá los datos a mano';
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--warning);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ===== HOME ===== -->
+  <div id="screen-home">
+    <div class="topbar">
+      <div class="topbar-row">
+        <div>
+          <div class="title">Bioingeniería</div>
+          <div class="subtitle">Hospital Central · San Luis</div>
+        </div>
+      </div>
+      <button class="back" onclick="navTo('config')" title="Configuración">⚙</button>
+    </div>
+
+    <main>
+      <div class="hero">
+        <div class="label">Inspección · Mantenimiento</div>
+        <h1>Elegí la <span class="accent">familia</span> del equipo</h1>
+      </div>
+
+      <div class="tabs">
+        <button class="active" onclick="switchTab('nueva', this)">Nueva inspección</button>
+        <button onclick="switchTab('historial', this)">Historial</button>
+      </div>
+
+      <div id="tab-nueva">
+        <div class="family-grid">
+          <button class="family-card" onclick="startInspection('quirofano')">
+            <span class="code">F-01</span>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>
+            <div class="name">Quirófano</div>
+            <div class="meta">Mesas · Anestesia · Torre lap · TEGRIS · Cialíticas</div>
+          </button>
+          <button class="family-card" onclick="startInspection('uti')">
+            <span class="code">F-02</span>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            <div class="name">UTI</div>
+            <div class="meta">Respirador · Monitor · MMX · Cama · Capnografía</div>
+          </button>
+          <button class="family-card" onclick="startInspection('uci')">
+            <span class="code">F-03</span>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <div class="name">UCI</div>
+            <div class="meta">Coronaria intensiva · Resp · Monitor · Bomba</div>
+          </button>
+          <button class="family-card" onclick="startInspection('uco')">
+            <span class="code">F-04</span>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            <div class="name">UCO</div>
+            <div class="meta">Módulo cardíaco · Marcapasos · Contrapulsación</div>
+          </button>
+          <button class="family-card" onclick="startInspection('upa')" style="grid-column: span 2;">
+            <span class="code">F-05</span>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <div class="name">UPA</div>
+            <div class="meta">Procedimientos ambulatorios · Endoscopio · Camillas</div>
+          </button>
+        </div>
+      </div>
+
+      <div id="tab-historial" class="hidden">
+        <div id="history-list"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== FORM ===== -->
+  <div id="screen-form" class="hidden">
+    <div class="topbar">
+      <button class="back" onclick="confirmExit()">←</button>
+      <div class="topbar-row">
+        <div>
+          <div class="title" id="form-title">Inspección</div>
+          <div class="subtitle" id="form-subtitle">—</div>
+        </div>
+      </div>
+      <div class="topbar-side" id="form-progress">0%</div>
+    </div>
+    <main id="form-body"></main>
+    <div class="action-bar">
+      <button class="btn btn-secondary" onclick="confirmExit()">Cancelar</button>
+      <button class="btn btn-primary" id="btn-submit" onclick="submitInspection()">
+        <span id="submit-text">Guardar y enviar</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== CONFIG ===== -->
+  <div id="screen-config" class="hidden">
+    <div class="topbar">
+      <button class="back" onclick="navTo('home')">←</button>
+      <div class="topbar-row">
+        <div>
+          <div class="title">Configuración</div>
+          <div class="subtitle">Sincronización · Apps Script</div>
+        </div>
+      </div>
+    </div>
+    <main class="config-page">
+      <div class="note">
+        <strong>1.</strong> Crear un Google Sheet con 5 hojas de respuestas (<code>Quirofano</code>, <code>Laboratorio</code>, <code>Imagenes</code>, <code>Consultorio</code>, <code>Infraestructura</code>) + 1 hoja <code>Inventario</code> con los equipos.<br><br>
+        <strong>2.</strong> Pegar <code>backend.gs</code> en Extensiones → Apps Script.<br><br>
+        <strong>3.</strong> Implementar como Aplicación web (Ejecutar como yo · Acceso: cualquiera).<br><br>
+        <strong>4.</strong> Pegar la URL acá.
+      </div>
+      <div class="field"><label>URL del Apps Script <span class="required">*</span></label><input type="url" id="cfg-url" placeholder="https://script.google.com/.../exec"></div>
+      <div class="field"><label>Nombre del técnico (predeterminado)</label><input type="text" id="cfg-tecnico" placeholder="Ej: Juan Pérez"></div>
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button class="btn btn-secondary" onclick="testConnection()">Probar conexión</button>
+        <button class="btn btn-primary" onclick="saveConfig()">Guardar</button>
+      </div>
+      <div style="margin-top: 20px; padding: 16px; background: var(--bg-elevated); border-radius: var(--radius); font-size: 12px; color: var(--ink-soft); line-height: 1.6;">
+        <strong style="color: var(--ink);">Inventario cargado:</strong> <span id="inv-count">0</span> equipos<br>
+        <strong style="color: var(--ink);">Inspecciones pendientes:</strong> <span id="pending-count">0</span><br>
+        <div style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn btn-secondary" style="font-size: 12px; min-height: 36px; flex: 0;" onclick="syncInventory()">Sincronizar inventario</button>
+          <button class="btn btn-secondary" style="font-size: 12px; min-height: 36px; flex: 0;" onclick="resyncPending()">Reintentar envío</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// MAPEO FAMILIA → CHECKLIST (separados por familia)
+// ============================================================
+const CHECKLISTS = {
+  // ===== QUIRÓFANO =====
+  'Monitor multiparamétrico': {
+    titulo: 'Checklist · Monitor',
+    items: [
+      'Enchufado a red eléctrica',
+      'Cable de alimentación en buen estado',
+      'Enciende y completa autotest',
+      'Pantalla sin daños · imagen correcta',
+      'Carcasa sin fisuras',
+      'Batería interna conserva carga',
+      'Alarmas audibles'
+    ]
+  },
+  'Módulo MMX / IntelliBridge': {
+    titulo: 'Checklist · MMX / IntelliBridge',
+    items: [
+      'Enchufado / acoplado al monitor',
+      'SpO₂ funciona y mide',
+      'ECG funciona (3/5 derivaciones)',
+      'NIBP infla y mide',
+      'Temperatura mide correctamente',
+      'Capnografía (si aplica)',
+      'Cables de paciente sin daños',
+      'Carcasa del módulo en buen estado'
+    ]
+  },
+  'Desfibrilador': {
+    titulo: 'Checklist · Desfibrilador',
+    items: [
+      'Enchufado a red / batería con carga',
+      'Test semanal vigente',
+      'Paletas / electrodos en buen estado',
+      'Parches dentro de vencimiento',
+      'Carcasa sin daños',
+      'Descarga interna OK',
+      'Registro ECG funcional'
+    ]
+  },
+  'Electrobisturí': {
+    titulo: 'Checklist · Electrobisturí',
+    items: [
+      'Enchufado a red eléctrica',
+      'Enciende correctamente',
+      'Ficha placa retorno OK',
+      'Ficha electrodo activo OK',
+      'Pedales funcionan',
+      'Alarma de placa OK',
+      'Carcasa sin daños'
+    ]
+  },
+  'Respirador / Anestesia': {
+    titulo: 'Checklist · Respirador / Anestesia',
+    items: [
+      'Enchufado a red eléctrica',
+      'Conexión a aire / O₂ correcta',
+      'Enciende y completa autotest',
+      'Test de usuario OK',
+      'Batería conserva carga',
+      'Sin condensación en tubuladuras',
+      'Tubuladuras sin fisuras',
+      'Sensor de flujo OK',
+      'Alarmas funcionan'
+    ]
+  },
+  'Bomba de infusión': {
+    titulo: 'Checklist · Bomba de infusión',
+    items: [
+      'Enchufada a red eléctrica',
+      'Enciende correctamente',
+      'Batería conserva carga',
+      'Alarmas funcionan',
+      'Oclusión detectada',
+      'Aire en línea detectado',
+      'Carcasa y soporte OK'
+    ]
+  },
+  'Lámpara cialítica': {
+    titulo: 'Checklist · Lámpara cialítica',
+    items: [
+      'Enciende correctamente',
+      'Intensidad regulable',
+      'Articulaciones firmes',
+      'Carcasa sin fisuras',
+      'Cable de alimentación OK',
+      'Mango esterilizable presente'
+    ]
+  },
+  'Mesa de cirugía': {
+    titulo: 'Checklist · Mesa de cirugía',
+    items: [
+      'Enchufada / batería con carga',
+      'Control remoto funciona',
+      'Movimiento: altura',
+      'Movimiento: trendelenburg',
+      'Movimiento: lateralización',
+      'Movimiento: dorso / piernas',
+      'Frenos OK',
+      'Accesorios completos'
+    ]
+  },
+  'Brazo quirúrgico / TEGRIS': {
+    titulo: 'Checklist · Brazo / TEGRIS',
+    items: [
+      'Articulaciones firmes',
+      'Freno hidráulico / neumático OK',
+      'Pantalla enciende',
+      'Conexiones de video OK',
+      'Carcasa y cables sin daños'
+    ]
+  },
+
+  // ===== LABORATORIO =====
+  'Centrífuga': {
+    titulo: 'Checklist · Centrífuga',
+    items: [
+      'Enchufada a red',
+      'Tapa cierra y traba',
+      'Rotor sin daños · equilibrado',
+      'Timer funciona',
+      'RPM alcanza valor seteado',
+      'Sin ruidos anormales',
+      'Sistema de freno OK'
+    ]
+  },
+  'Microscopio': {
+    titulo: 'Checklist · Microscopio',
+    items: [
+      'Enciende',
+      'Intensidad regulable',
+      'Oculares limpios',
+      'Objetivos limpios y enfocan',
+      'Platina se desplaza suave',
+      'Condensador OK',
+      'Carcasa y base estable'
+    ]
+  },
+  'Heladera / Freezer': {
+    titulo: 'Checklist · Heladera / Freezer',
+    items: [
+      'Enchufada a red',
+      'Temperatura dentro de rango',
+      'Burlete de puerta en buen estado',
+      'Iluminación interna OK',
+      'Alarma de temperatura OK',
+      'Registro de temperatura al día',
+      'Sin escarcha excesiva'
+    ],
+    extras: [{ key: 'temp_medida', label: 'Temperatura medida (°C)', type: 'number' }]
+  },
+  'Estufa / Incubadora': {
+    titulo: 'Checklist · Estufa / Incubadora',
+    items: [
+      'Enchufada a red',
+      'Temperatura dentro de rango',
+      'Termómetro de verificación coincide',
+      'Puerta cierra correctamente',
+      'Ventilación / circulación OK',
+      'Alarmas operativas'
+    ],
+    extras: [
+      { key: 'temp_seteada', label: 'Temperatura seteada (°C)', type: 'number' },
+      { key: 'temp_medida', label: 'Temperatura medida (°C)', type: 'number' }
+    ]
+  },
+  'Autoclave': {
+    titulo: 'Checklist · Autoclave',
+    items: [
+      'Enchufada / agua suficiente',
+      'Junta de puerta en buen estado',
+      'Manómetro / sensor de presión OK',
+      'Sensor de temperatura OK',
+      'Ciclo se completa correctamente',
+      'Test biológico vigente',
+      'Válvula de seguridad OK'
+    ]
+  },
+  'Analizador clínico': {
+    titulo: 'Checklist · Analizador',
+    items: [
+      'Enchufado y enciende',
+      'Software responde',
+      'Reactivos / consumibles vigentes',
+      'Calibración vigente',
+      'Control interno OK',
+      'Impresora / conexión LIS OK'
+    ]
+  },
+  'Cabina de bioseguridad': {
+    titulo: 'Checklist · Cabina',
+    items: [
+      'Enciende y flujo activo',
+      'Luz UV operativa',
+      'Filtros HEPA dentro de vida útil',
+      'Alarma de flujo OK',
+      'Superficie sin daños',
+      'Horas de uso registradas'
+    ]
+  },
+  'Baño termostático': {
+    titulo: 'Checklist · Baño termostático',
+    items: [
+      'Enchufado / nivel de agua OK',
+      'Temperatura dentro de rango',
+      'Termostato responde',
+      'Sin corrosión visible'
+    ]
+  },
+  'Agitador': {
+    titulo: 'Checklist · Agitador',
+    items: [
+      'Enciende',
+      'Velocidad regulable',
+      'Timer funciona (si aplica)',
+      'Sin ruidos anormales',
+      'Base estable'
+    ]
+  },
+  'Balanza (laboratorio)': {
+    titulo: 'Checklist · Balanza',
+    items: [
+      'Enciende',
+      'Nivelada (burbuja centrada)',
+      'Verificación con masa patrón OK',
+      'Tara funciona',
+      'Plato sin daños'
+    ]
+  },
+  'Pipeta': {
+    titulo: 'Checklist · Pipeta',
+    items: [
+      'Émbolo se desplaza suave',
+      'Sin pérdidas / goteo',
+      'Cono / punta encaja firme',
+      'Verificación gravimétrica OK',
+      'Calibración vigente'
+    ]
+  },
+  'VITEK': {
+    titulo: 'Checklist · VITEK',
+    items: [
+      'Enciende y completa autotest',
+      'Densitómetro OK',
+      'Cassettes se cargan correctamente',
+      'Conexión con software OK',
+      'Control de calidad vigente'
+    ]
+  },
+
+  // ===== IMÁGENES =====
+  'Ecógrafo AFFINITI': {
+    titulo: 'Checklist · Ecógrafo',
+    items: [
+      'Enchufado a red eléctrica',
+      'Enciende correctamente',
+      'Pantalla sin daños · imagen correcta',
+      'Trackball / teclado funcionan',
+      'Puertos de transductor sin daños',
+      'Imagen B-mode OK',
+      'Doppler funcional',
+      'Almacenamiento / DICOM OK',
+      'Ruedas y frenos OK'
+    ]
+  },
+  'Transductor': {
+    titulo: 'Checklist · Transductor',
+    items: [
+      'Carcasa sin fisuras',
+      'Lente sin daños / sin burbujas',
+      'Cable sin cortes ni torsiones',
+      'Conector sin pines dañados',
+      'Elementos sin zonas muertas'
+    ],
+    extras: [{ key: 'tipo_transductor', label: 'Tipo (convex, lineal, sectorial)', type: 'text' }]
+  },
+  'Estación de sueño': {
+    titulo: 'Checklist · Estación de sueño',
+    items: [
+      'Enciende',
+      'Sensores conectados',
+      'Software registra correctamente',
+      'Cables de paciente sin daños',
+      'Almacenamiento OK'
+    ]
+  },
+
+  // ===== CONSULTORIO =====
+  'Tensiómetro': {
+    titulo: 'Checklist · Tensiómetro',
+    items: [
+      'Brazalete sin fugas',
+      'Manómetro / display funciona',
+      'Cierre del brazalete OK',
+      'Verificación contra patrón OK'
+    ]
+  },
+  'Balanza (consultorio)': {
+    titulo: 'Checklist · Balanza',
+    items: [
+      'Nivelada',
+      'Verificación con masa patrón OK',
+      'Tallímetro (si aplica) OK',
+      'Estructura estable'
+    ]
+  },
+  'Camilla': {
+    titulo: 'Checklist · Camilla',
+    items: [
+      'Articulaciones operan suave',
+      'Frenos funcionan',
+      'Barandas (si aplica) OK',
+      'Colchoneta sin roturas',
+      'Tapizado limpio y sano'
+    ]
+  },
+  'Negatoscopio': {
+    titulo: 'Checklist · Negatoscopio',
+    items: [
+      'Enciende',
+      'Luz uniforme',
+      'Tubos sin parpadeo',
+      'Sujeción de placa OK'
+    ]
+  },
+  'Otoscopio / Oftalmoscopio': {
+    titulo: 'Checklist · Otoscopio / Oftalmoscopio',
+    items: [
+      'Enciende',
+      'Intensidad de luz OK',
+      'Batería conserva carga',
+      'Lentes / cabezal sin daños',
+      'Conos / accesorios completos'
+    ]
+  },
+  'Lámpara de examen': {
+    titulo: 'Checklist · Lámpara de examen',
+    items: [
+      'Enciende',
+      'Brazo articulado firme',
+      'Carcasa sin daños',
+      'Cable OK'
+    ]
+  },
+  'ECG': {
+    titulo: 'Checklist · ECG',
+    items: [
+      'Enchufado / batería OK',
+      'Enciende',
+      'Cable de paciente sin daños',
+      'Electrodos / peras presentes',
+      'Impresión / pantalla OK',
+      'Trazado limpio'
+    ]
+  },
+  'Aspirador': {
+    titulo: 'Checklist · Aspirador',
+    items: [
+      'Enchufado / batería OK',
+      'Enciende',
+      'Vacío alcanza valor nominal',
+      'Frasco / filtro OK',
+      'Manguera sin fisuras'
+    ]
+  },
+
+  // ===== INFRAESTRUCTURA =====
+  'UPS': {
+    titulo: 'Checklist · UPS',
+    items: [
+      'Enchufada a red',
+      'Display funciona',
+      'Test de batería OK',
+      'Autonomía dentro de lo esperado',
+      'Sin alarmas activas',
+      'Ventilación / filtros OK',
+      'Carga conectada documentada'
+    ],
+    extras: [{ key: 'autonomia', label: 'Autonomía medida (min)', type: 'number' }]
+  },
+  'Sistema de elevación': {
+    titulo: 'Checklist · Sistema de elevación',
+    items: [
+      'Movimiento vertical OK',
+      'Movimiento horizontal OK',
+      'Frenos / topes OK',
+      'Cables / poleas sin desgaste',
+      'Mando funciona',
+      'Sin ruidos anormales'
+    ]
+  },
+  'Módulo Flexible Rack': {
+    titulo: 'Checklist · Flexible Rack',
+    items: [
+      'Anclajes firmes',
+      'Articulaciones OK',
+      'Frenos OK',
+      'Carcasa sin daños',
+      'Conexiones eléctricas OK'
+    ]
+  },
+  'Impresora médica': {
+    titulo: 'Checklist · Impresora médica',
+    items: [
+      'Enchufada / enciende',
+      'Insumo (placa/papel) cargado',
+      'Impresión de prueba OK',
+      'Conectividad de red OK',
+      'Sin atascos'
+    ]
+  },
+  'Contrapulsación': {
+    titulo: 'Checklist · Contrapulsación',
+    items: [
+      'Enchufada / batería OK',
+      'Enciende y completa autotest',
+      'Sensor de presión OK',
+      'Tanque de helio con carga',
+      'Cables de paciente OK',
+      'Alarmas operativas'
+    ]
+  },
+
+  // ===== UTI / UCI / UCO específicos =====
+  'Monitor del respirador': {
+    titulo: 'Checklist · Monitor del respirador',
+    items: [
+      'Conectado al respirador',
+      'Pantalla sin daños · imagen correcta',
+      'Lectura coincide con respirador',
+      'Cables sin daños',
+      'Alarmas operativas'
+    ]
+  },
+  'Módulo cardíaco invasivo': {
+    titulo: 'Checklist · Módulo cardíaco invasivo',
+    items: [
+      'Acoplado al monitor',
+      'Sensores conectados sin daños',
+      'Lectura de presión arterial OK',
+      'Lectura de presión venosa OK',
+      'Alarmas operativas',
+      'Carcasa del módulo OK'
+    ]
+  },
+  'Módulo de presión invasiva': {
+    titulo: 'Checklist · Módulo presión invasiva',
+    items: [
+      'Acoplado al monitor',
+      'Transductor sin daños',
+      'Calibración a cero OK',
+      'Lectura estable',
+      'Alarmas operativas'
+    ]
+  },
+  'Módulo de gasto cardíaco': {
+    titulo: 'Checklist · Gasto cardíaco',
+    items: [
+      'Acoplado al monitor',
+      'Sensor de temperatura OK',
+      'Catéter conectado correctamente',
+      'Lectura estable',
+      'Alarmas operativas'
+    ]
+  },
+  'Módulo BIS': {
+    titulo: 'Checklist · Módulo BIS',
+    items: [
+      'Acoplado al monitor',
+      'Cable de paciente sin daños',
+      'Sensor descartable presente',
+      'Lectura BIS OK',
+      'Calidad de señal aceptable'
+    ]
+  },
+  'Módulo de gas (anestesia)': {
+    titulo: 'Checklist · Módulo de gas',
+    items: [
+      'Acoplado al monitor',
+      'Trampa de agua presente',
+      'Calibración vigente',
+      'Lectura de CO₂ · O₂ · N₂O OK',
+      'Sin fugas en línea de muestreo',
+      'Alarmas operativas'
+    ]
+  },
+  'Capnografía': {
+    titulo: 'Checklist · Capnografía',
+    items: [
+      'Conectado al paciente / monitor',
+      'Sensor en buen estado',
+      'Trampa de agua OK',
+      'Lectura de CO₂ estable',
+      'Alarmas operativas'
+    ]
+  },
+  'Cama de UTI': {
+    titulo: 'Checklist · Cama de UTI eléctrica',
+    items: [
+      'Enchufada · batería OK',
+      'Mando funciona',
+      'Movimientos: altura',
+      'Movimientos: trendelenburg',
+      'Movimientos: respaldo / piecera',
+      'Barandas firmes y completas',
+      'Frenos OK',
+      'Colchón sin daños',
+      'CPR (palanca de emergencia) OK'
+    ]
+  },
+  'Cama de internación': {
+    titulo: 'Checklist · Cama de internación',
+    items: [
+      'Movimientos OK (manual o eléctrico)',
+      'Barandas firmes',
+      'Frenos funcionan',
+      'Colchón sin roturas',
+      'Estructura estable'
+    ]
+  },
+  'Sistema de calentamiento': {
+    titulo: 'Checklist · Sistema de calentamiento',
+    items: [
+      'Enchufado · enciende',
+      'Manta / dispositivo sin daños',
+      'Temperatura alcanza valor seteado',
+      'Sensor de temperatura OK',
+      'Alarmas operativas'
+    ]
+  },
+  'Marcapasos': {
+    titulo: 'Checklist · Marcapasos',
+    items: [
+      'Batería con carga',
+      'Display funciona',
+      'Cables / electrodos sin daños',
+      'Test de estimulación OK',
+      'Sensibilidad ajustable'
+    ]
+  },
+  'Carro de paro': {
+    titulo: 'Checklist · Carro de paro',
+    items: [
+      'Inventario completo según protocolo',
+      'Medicación dentro de vencimiento',
+      'Desfibrilador con carga',
+      'Tubos de oxígeno con carga',
+      'Laringoscopio funciona',
+      'Aspirador funciona',
+      'Precinto / control vigente'
+    ]
+  },
+  'Bomba extracorpórea': {
+    titulo: 'Checklist · Bomba extracorpórea',
+    items: [
+      'Enchufada · batería OK',
+      'Roller funciona',
+      'Sensor de presión OK',
+      'Sensor de burbuja OK',
+      'Alarmas operativas',
+      'Tubuladuras compatibles · sin daños'
+    ]
+  },
+  'Sistema de elevación': {
+    titulo: 'Checklist · Sistema de elevación',
+    items: [
+      'Movimiento vertical OK',
+      'Frenos / topes firmes',
+      'Cables / poleas sin desgaste',
+      'Mando funciona',
+      'Carga útil documentada',
+      'Sin ruidos anormales'
+    ]
+  },
+  'Central de monitoreo': {
+    titulo: 'Checklist · Central de monitoreo',
+    items: [
+      'Enchufada · enciende',
+      'Conectada a todos los monitores de la sala',
+      'Alarmas centralizadas OK',
+      'Almacenamiento de tendencias OK',
+      'Impresión OK (si aplica)'
+    ]
+  },
+  'Analizador de gases': {
+    titulo: 'Checklist · Analizador de gases',
+    items: [
+      'Enchufado · enciende',
+      'Calibración vigente',
+      'Control de calidad OK',
+      'Reactivos / consumibles vigentes',
+      'Conectividad LIS OK'
+    ]
+  },
+
+  // ===== TORRE LAPAROSCOPÍA / VIDEOLAP =====
+  'Videolaringoscopio': {
+    titulo: 'Checklist · Videolaringoscopio',
+    items: [
+      'Mango / cargador OK',
+      'Pantalla sin daños',
+      'Imagen clara',
+      'Hojas (ramas) completas y sin daños',
+      'Batería con carga'
+    ]
+  },
+  'Endoscopio': {
+    titulo: 'Checklist · Endoscopio',
+    items: [
+      'Cubierta sin fisuras',
+      'Distal sin daños',
+      'Test de estanqueidad OK',
+      'Canales libres (succión, biopsia)',
+      'Conector de luz OK',
+      'Imagen sin pixeles muertos'
+    ]
+  },
+  'Torre laparoscopía · Cabezal': {
+    titulo: 'Checklist · Cabezal de cámara',
+    items: [
+      'Cable sin cortes',
+      'Lente sin daños',
+      'Imagen sin distorsión',
+      'Botones funcionales',
+      'Conector OK'
+    ]
+  },
+  'Torre laparoscopía · Adaptador': {
+    titulo: 'Checklist · Adaptador de cámara',
+    items: [
+      'Carcasa sin daños',
+      'Conexión a fuente OK',
+      'Conexión a cabezal OK',
+      'Imagen llega a monitor sin ruido'
+    ]
+  },
+  'Torre laparoscopía · Fuente de luz': {
+    titulo: 'Checklist · Fuente de luz',
+    items: [
+      'Enchufada · enciende',
+      'Lámpara dentro de horas de vida útil',
+      'Cable de luz sin daños',
+      'Intensidad regulable',
+      'Ventilación / filtros OK'
+    ]
+  },
+  'Torre laparoscopía · Fuente de video': {
+    titulo: 'Checklist · Fuente de video',
+    items: [
+      'Enchufada · enciende',
+      'Conexiones de video OK',
+      'Imagen llega a monitor',
+      'Sin interferencia / ruido'
+    ]
+  },
+  'Torre laparoscopía · Insuflador': {
+    titulo: 'Checklist · Insuflador',
+    items: [
+      'Conectado al tanque de CO₂',
+      'Presión alcanza valor seteado',
+      'Flujo regulable',
+      'Alarma de baja presión OK',
+      'Manguera sin daños'
+    ]
+  },
+  'Torre laparoscopía · Motor': {
+    titulo: 'Checklist · Unidad de control de motor',
+    items: [
+      'Enchufada · enciende',
+      'Pedal funciona',
+      'Conexión a pieza de mano OK',
+      'Velocidad regulable',
+      'Sin sobrecalentamiento'
+    ]
+  },
+
+  // ===== EQUIPOS GENÉRICOS DEL INVENTARIO =====
+  'Camilla de transporte': {
+    titulo: 'Checklist · Camilla de transporte',
+    items: [
+      'Frenos funcionan en las 4 ruedas',
+      'Barandas firmes',
+      'Articulación de respaldo OK',
+      'Colchoneta sin roturas',
+      'Pie de suero integrado OK',
+      'Estructura estable'
+    ]
+  },
+  'Silla de ruedas': {
+    titulo: 'Checklist · Silla de ruedas',
+    items: [
+      'Frenos funcionan',
+      'Ruedas sin trabas',
+      'Apoyabrazos firmes',
+      'Apoyapiés completos',
+      'Tapizado sin roturas'
+    ]
+  },
+  'Oxímetro': {
+    titulo: 'Checklist · Oxímetro de pulso',
+    items: [
+      'Enciende',
+      'Batería conserva carga',
+      'Pantalla legible',
+      'Sensor / dedil sin daños',
+      'Lectura estable',
+      'Alarmas operativas'
+    ]
+  },
+  'Balanza': {
+    titulo: 'Checklist · Balanza',
+    items: [
+      'Nivelada (si corresponde)',
+      'Verificación con masa patrón OK',
+      'Tara funciona',
+      'Tallímetro OK (si aplica)',
+      'Estructura estable'
+    ]
+  },
+  'Microscopio quirúrgico': {
+    titulo: 'Checklist · Microscopio quirúrgico',
+    items: [
+      'Enciende · iluminación regulable',
+      'Oculares limpios',
+      'Foco funciona',
+      'Brazo articulado firme',
+      'Frenos / contrapesos OK'
+    ]
+  },
+  'Arco en C': {
+    titulo: 'Checklist · Arco en C',
+    items: [
+      'Enciende · autotest OK',
+      'Movimientos del arco OK',
+      'Imagen radiográfica clara',
+      'Pantallas funcionan',
+      'Frenos y posicionamiento OK',
+      'Dosimetría vigente'
+    ]
+  },
+  'Ecógrafo': {
+    titulo: 'Checklist · Ecógrafo',
+    items: [
+      'Enchufado · enciende',
+      'Pantalla sin daños · imagen correcta',
+      'Trackball / teclado funcionan',
+      'Puertos de transductor sin daños',
+      'B-mode · Doppler funcionales',
+      'DICOM / almacenamiento OK',
+      'Ruedas / frenos OK'
+    ]
+  },
+  'Sistema de captura de imágenes': {
+    titulo: 'Checklist · Sistema de captura',
+    items: [
+      'Enchufado · enciende',
+      'Captura de imagen OK',
+      'Almacenamiento OK',
+      'Conexión con HIS / PACS OK',
+      'Cables sin daños'
+    ]
+  },
+  'Adaptador HIS / TASY': {
+    titulo: 'Checklist · Adaptador HIS / TASY',
+    items: [
+      'Conectado al monitor / equipo',
+      'Conectividad de red OK',
+      'Datos llegan al HIS',
+      'Sin alarmas activas'
+    ]
+  },
+  'Monitor de pantalla (display)': {
+    titulo: 'Checklist · Monitor / Display',
+    items: [
+      'Enchufado · enciende',
+      'Imagen sin píxeles muertos',
+      'Brillo / contraste OK',
+      'Soporte / brazo firme',
+      'Cables sin daños'
+    ]
+  },
+  'Equipo quirúrgico especializado': {
+    titulo: 'Checklist · Equipo quirúrgico especializado',
+    items: [
+      'Enchufado · enciende',
+      'Pieza de mano sin daños',
+      'Pedal funciona',
+      'Parámetros configurables',
+      'Sin alarmas activas',
+      'Limpieza y esterilización OK'
+    ]
+  },
+  'Contrapulsación': {
+    titulo: 'Checklist · Contrapulsación',
+    items: [
+      'Enchufada · batería OK',
+      'Autotest completo',
+      'Sensor de presión OK',
+      'Tanque de helio con carga',
+      'Cables de paciente OK',
+      'Alarmas operativas'
+    ]
+  },
+  'Brazo de anestesia': {
+    titulo: 'Checklist · Brazo de anestesia',
+    items: [
+      'Articulaciones firmes',
+      'Freno OK',
+      'Conexiones de gases sin fugas',
+      'Toma eléctrica OK'
+    ]
+  },
+  'Aspirador': {
+    titulo: 'Checklist · Aspirador',
+    items: [
+      'Enchufado / batería OK',
+      'Enciende',
+      'Vacío alcanza valor nominal',
+      'Frasco / filtro OK',
+      'Manguera sin fisuras'
+    ]
+  },
+  'Tensiómetro': {
+    titulo: 'Checklist · Tensiómetro',
+    items: [
+      'Brazalete sin fugas',
+      'Manómetro / display funciona',
+      'Cierre del brazalete OK',
+      'Verificación contra patrón OK'
+    ]
+  },
+  'ECG': {
+    titulo: 'Checklist · ECG',
+    items: [
+      'Enchufado / batería OK',
+      'Enciende',
+      'Cable de paciente sin daños',
+      'Electrodos / peras presentes',
+      'Impresión / pantalla OK',
+      'Trazado limpio'
+    ]
+  },
+  'Lámpara de examen': {
+    titulo: 'Checklist · Lámpara de examen',
+    items: [
+      'Enciende',
+      'Brazo articulado firme',
+      'Carcasa sin daños',
+      'Cable OK'
+    ]
+  },
+  'Mobiliario': {
+    titulo: 'Checklist · Mobiliario',
+    items: [
+      'Estructura estable',
+      'Sin oxidación visible',
+      'Ruedas / patas firmes',
+      'Sin roturas en superficie'
+    ]
+  },
+  'Pie de suero': {
+    titulo: 'Checklist · Pie de suero',
+    items: [
+      'Estructura estable',
+      'Altura regulable',
+      'Ruedas funcionan',
+      'Ganchos OK'
+    ]
+  },
+  'RX rodante': {
+    titulo: 'Checklist · RX rodante',
+    items: [
+      'Enchufado · batería OK',
+      'Autotest OK',
+      'Movimiento del brazo OK',
+      'Ruedas / frenos OK',
+      'Disparo OK',
+      'Dosimetría vigente'
+    ]
+  },
+
+  // ===== FALLBACK GENÉRICO =====
+  'Genérico': {
+    titulo: 'Checklist · Genérico',
+    items: [
+      'Enchufado a red / batería con carga',
+      'Enciende correctamente',
+      'Cables y conectores en buen estado',
+      'Carcasa sin daños visibles',
+      'Funciona dentro de parámetros'
+    ]
+  }
+};
+
+// Familias por formulario (sector clínico). Mapeo sector → key.
+// IMPORTANTE: las familias se autocompletan desde el inventario sincronizado.
+// Las que aparecen acá son el fallback por defecto si el inventario no se cargó.
+const SECTOR_TO_FORM = {
+  'QUIROFANO': 'quirofano',
+  'UTI': 'uti',
+  'UCI': 'uci',
+  'UCO': 'uco',
+  'UPA': 'upa'
+};
+
+const FORMS = {
+  quirofano: {
+    nombre: 'Quirófano', code: 'F-01', sector: 'QUIROFANO',
+    descripcion: 'Mesas, anestesia, monitoreo, electrobisturí, torre lap, TEGRIS',
+    familias: ['Monitor multiparamétrico', 'Módulo MMX / IntelliBridge', 'Módulo Flexible Rack', 'Respirador / Anestesia', 'Brazo de anestesia', 'Módulo de gas (anestesia)', 'Desfibrilador', 'Electrobisturí', 'Bomba de infusión', 'Lámpara cialítica', 'Mesa de cirugía', 'Brazo quirúrgico / TEGRIS', 'Videolaringoscopio', 'Endoscopio', 'Torre laparoscopía · Cabezal', 'Torre laparoscopía · Adaptador', 'Torre laparoscopía · Fuente de luz', 'Torre laparoscopía · Fuente de video', 'Torre laparoscopía · Insuflador', 'Torre laparoscopía · Motor', 'Camilla de transporte', 'Carro de paro', 'Sistema de calentamiento', 'Aspirador', 'Microscopio quirúrgico', 'Arco en C', 'Bomba extracorpórea', 'Adaptador HIS / TASY', 'Monitor de pantalla (display)', 'Otro']
+  },
+  uti: {
+    nombre: 'UTI', code: 'F-02', sector: 'UTI',
+    descripcion: 'Terapia intensiva: respirador, monitor, cama, MMX',
+    familias: ['Respirador / Anestesia', 'Monitor del respirador', 'Monitor multiparamétrico', 'Módulo MMX / IntelliBridge', 'Módulo Flexible Rack', 'Módulo de presión invasiva', 'Módulo de gasto cardíaco', 'Capnografía', 'Cama de UTI', 'Desfibrilador', 'Carro de paro', 'Bomba de infusión', 'Sistema de calentamiento', 'Sistema de elevación', 'Camilla de transporte', 'Balanza', 'ECG', 'Aspirador', 'Oxímetro', 'Marcapasos', 'Lámpara de examen', 'Estación de sueño', 'Analizador de gases', 'Central de monitoreo', 'Otro']
+  },
+  uci: {
+    nombre: 'UCI', code: 'F-03', sector: 'UCI',
+    descripcion: 'Unidad coronaria intensiva',
+    familias: ['Respirador / Anestesia', 'Monitor multiparamétrico', 'Módulo MMX / IntelliBridge', 'Módulo Flexible Rack', 'Cama de UTI', 'Bomba de infusión', 'Desfibrilador', 'Carro de paro', 'Sistema de calentamiento', 'Lámpara de examen', 'Otro']
+  },
+  uco: {
+    nombre: 'UCO', code: 'F-04', sector: 'UCO',
+    descripcion: 'Unidad coronaria con módulo cardíaco invasivo',
+    familias: ['Respirador / Anestesia', 'Monitor del respirador', 'Monitor multiparamétrico', 'Módulo MMX / IntelliBridge', 'Módulo Flexible Rack', 'Módulo cardíaco invasivo', 'Módulo de presión invasiva', 'Módulo BIS', 'Cama de UTI', 'Marcapasos', 'Desfibrilador', 'Carro de paro', 'Contrapulsación', 'Sistema de calentamiento', 'Camilla de transporte', 'ECG', 'Lámpara de examen', 'Central de monitoreo', 'Otro']
+  },
+  upa: {
+    nombre: 'UPA', code: 'F-05', sector: 'UPA',
+    descripcion: 'Unidad de procedimientos ambulatorios',
+    familias: ['Endoscopio', 'Camilla de transporte', 'Silla de ruedas', 'Monitor multiparamétrico', 'Módulo MMX / IntelliBridge', 'Módulo Flexible Rack', 'Respirador / Anestesia', 'Electrobisturí', 'Brazo quirúrgico / TEGRIS', 'Mesa de cirugía', 'Lámpara cialítica', 'Lámpara de examen', 'Sistema de captura de imágenes', 'Microscopio quirúrgico', 'Equipo quirúrgico especializado', 'Tensiómetro', 'Balanza', 'Oxímetro', 'Aspirador', 'Torre laparoscopía · Adaptador', 'Torre laparoscopía · Fuente de luz', 'Torre laparoscopía · Fuente de video', 'Monitor de pantalla (display)', 'Otro']
+  }
+};
+
+const PRESTADORES = ['AGIMED', 'Científica San Luis', 'Philips', 'Bioingeniería', 'Sin contrato'];
+const TIPOS_INTERVENCION = ['Mantenimiento preventivo programado', 'Inspección de rutina', 'Verificación post-reparación', 'Otro'];
+const ACCIONES = ['Limpieza externa', 'Limpieza interna', 'Calibración', 'Reemplazo de accesorios', 'Reemplazo de fusibles', 'Reemplazo de batería', 'Ajuste mecánico', 'Actualización firmware', 'Test funcional', 'Verificación seguridad eléctrica', 'Reporte a prestador', 'Retiro a taller'];
+const ESTADOS = [
+  { key: 'ok', label: 'Operativo', emoji: '✅' },
+  { key: 'warn', label: 'Con observaciones', emoji: '⚠️' },
+  { key: 'maint', label: 'En mantenimiento', emoji: '🔧' },
+  { key: 'fail', label: 'Fuera de servicio', emoji: '❌' }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentForm = null;
+let currentData = {};
+let lookupTimer = null;
+
+// ============================================================
+// NAV
+// ============================================================
+function navTo(screen) {
+  document.querySelectorAll('[id^="screen-"]').forEach(s => s.classList.add('hidden'));
+  document.getElementById('screen-' + screen).classList.remove('hidden');
+  window.scrollTo(0, 0);
+  if (screen === 'home') renderHistory();
+  if (screen === 'config') {
+    document.getElementById('cfg-url').value = localStorage.getItem('bioing_url') || '';
+    document.getElementById('cfg-tecnico').value = localStorage.getItem('bioing_tecnico') || '';
+    document.getElementById('pending-count').textContent = getPending().length;
+    document.getElementById('inv-count').textContent = getInventoryCount();
+  }
+}
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-nueva').classList.toggle('hidden', tab !== 'nueva');
+  document.getElementById('tab-historial').classList.toggle('hidden', tab !== 'historial');
+  if (tab === 'historial') renderHistory();
+}
+
+// ============================================================
+// INSPECTION
+// ============================================================
+function startInspection(formKey) {
+  currentForm = formKey;
+  const f = FORMS[formKey];
+  currentData = {
+    formKey, formName: f.nombre, code: f.code,
+    fecha: new Date().toISOString().slice(0, 10),
+    tecnico: localStorage.getItem('bioing_tecnico') || '',
+    serie: '', marca: '', prestador: '',
+    sector: f.sector || '',  // sector se autocompleta según el formulario
+    area: '',                 // sala/ubicación específica
+    inventario: '',
+    tipo_intervencion: '', familia: '', checks: {}, extras: {}, acciones: [],
+    estado: '', observaciones: '', proxima: '', firma: '',
+    invMatch: null,
+    locConfirmed: null
+  };
+  document.getElementById('form-title').textContent = f.nombre;
+  document.getElementById('form-subtitle').textContent = f.code + ' · Inspección';
+  renderForm();
+  navTo('form');
+}
+
+function renderForm() {
+  const f = FORMS[currentForm];
+  const body = document.getElementById('form-body');
+
+  let html = '';
+
+  // Banner de aviso si no hay inventario sincronizado
+  const invCount = getInventoryCount();
+  if (invCount === 0) {
+    html += `<div style="background: #fff5e6; border: 1.5px solid var(--warning); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 18px; font-size: 13px; line-height: 1.5;">
+      <b style="color: var(--warning);">⚠ Inventario no sincronizado</b><br>
+      No vas a poder buscar equipos por número de serie. Andá a <b>⚙ Configuración → Sincronizar inventario</b> primero.
+    </div>`;
+  }
+
+
+  // 1 · Datos
+  html += `<div class="section">
+    <div class="section-title">1 · Datos de la inspección</div>
+    <div class="field-row">
+      <div class="field"><label>Fecha <span class="required">*</span></label><input type="date" data-k="fecha" value="${currentData.fecha}"></div>
+      <div class="field"><label>Inventario</label><input type="text" data-k="inventario" value="${currentData.inventario}" placeholder="N° interno"></div>
+    </div>
+    <div class="field"><label>Técnico responsable <span class="required">*</span></label><input type="text" data-k="tecnico" value="${currentData.tecnico}" placeholder="Nombre y apellido"></div>
+    <div class="field"><label>Tipo de intervención <span class="required">*</span></label>
+      <select data-k="tipo_intervencion">
+        <option value="">— Seleccionar —</option>
+        ${TIPOS_INTERVENCION.map(t => `<option value="${t}" ${currentData.tipo_intervencion===t?'selected':''}>${t}</option>`).join('')}
+      </select>
+    </div>
+  </div>`;
+
+  // 2 · Equipo (con búsqueda por serie)
+  html += `<div class="section">
+    <div class="section-title">2 · Equipo</div>
+    <div class="field">
+      <label>N° de serie <span class="required">*</span></label>
+      <div class="serial-search">
+        <input type="text" id="serial-input" data-k="serie" value="${currentData.serie}" placeholder="Escribir o escanear" autocomplete="off">
+        <div class="lookup-status" id="lookup-status"></div>
+      </div>
+    </div>
+    <div id="inv-match-container"></div>
+    <div id="equipo-fields"></div>
+  </div>`;
+
+  // 3 · Checklist (vacío hasta que se elija familia)
+  html += `<div class="section"><div class="section-title">3 · Checklist técnico</div>
+    <div id="checklist-container">
+      <div class="empty" style="padding: 30px 20px; background: var(--bg-elevated); border: 1px dashed var(--line); border-radius: var(--radius);">
+        <div class="icon">📋</div>
+        Seleccioná la familia del equipo arriba para ver el checklist específico.
+      </div>
+    </div>
+  </div>`;
+
+  // 4 · Acciones
+  html += `<div class="section">
+    <div class="section-title">4 · Acciones de Ingeniería realizadas</div>
+    <div class="chip-group">
+      ${ACCIONES.map(a => `<div class="chip ${currentData.acciones.includes(a)?'active':''}" onclick="toggleAccion('${a.replace(/'/g,"\\\\'")}', this)">${a}</div>`).join('')}
+    </div>
+  </div>`;
+
+  // 5 · Estado
+  html += `<div class="section">
+    <div class="section-title">5 · Estado final</div>
+    <div class="estado-grid">
+      ${ESTADOS.map(e => `<button class="estado-btn ${e.key} ${currentData.estado===e.key?'active':''}" onclick="setEstado('${e.key}', this)">
+        <span class="emoji">${e.emoji}</span><span>${e.label}</span>
+      </button>`).join('')}
+    </div>
+    <div class="field" style="margin-top: 18px;">
+      <label>Observaciones / Detalle técnico</label>
+      <textarea data-k="observaciones" placeholder="Lo que necesites anotar...">${currentData.observaciones}</textarea>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Próxima inspección</label><input type="date" data-k="proxima" value="${currentData.proxima}"></div>
+      <div class="field"><label>Iniciales <span class="required">*</span></label><input type="text" data-k="firma" value="${currentData.firma}" placeholder="JP" maxlength="6"></div>
+    </div>
+  </div>`;
+
+  body.innerHTML = html;
+
+  // Bind general inputs
+  body.querySelectorAll('[data-k]').forEach(el => {
+    el.addEventListener('input', e => { currentData[e.target.dataset.k] = e.target.value; updateProgress(); });
+    el.addEventListener('change', e => { currentData[e.target.dataset.k] = e.target.value; updateProgress(); });
+  });
+
+  // Serial lookup (debounced)
+  const serial = document.getElementById('serial-input');
+  serial.addEventListener('input', e => {
+    currentData.serie = e.target.value;
+    clearTimeout(lookupTimer);
+    if (e.target.value.length >= 3) {
+      document.getElementById('lookup-status').innerHTML = '<div class="spinner-mini"></div>';
+      lookupTimer = setTimeout(() => lookupSerial(e.target.value), 400);
+    } else {
+      document.getElementById('lookup-status').innerHTML = '';
+      document.getElementById('inv-match-container').innerHTML = '';
+      renderEquipoFields();
+    }
+  });
+
+  renderEquipoFields();
+  if (currentData.familia) renderChecklist();
+  updateProgress();
+}
+
+// ============================================================
+// LOOKUP POR SERIE
+// ============================================================
+async function lookupSerial(serie) {
+  // Limpiar estado visual previo
+  const ef = document.getElementById('equipo-fields');
+  if (ef) ef.classList.remove('needs-manual');
+
+  let match = findInLocalInventory(serie);
+
+  // Si no hay coincidencia local pero hay URL, probar con el backend
+  if (!match && localStorage.getItem('bioing_url')) {
+    try {
+      const url = localStorage.getItem('bioing_url') + '?action=lookup&serie=' + encodeURIComponent(serie);
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.ok && data.equipo) match = data.equipo;
+    } catch (e) {}
+  }
+
+  document.getElementById('lookup-status').innerHTML = '';
+  const container = document.getElementById('inv-match-container');
+
+  if (match) {
+    currentData.invMatch = match;
+    currentData.marca = match.marca || '';
+    currentData.prestador = match.prestador || '';
+    // sector ya está fijo del formulario, no lo sobreescribimos
+    currentData.area = match.area || '';
+    if (match.inventario) currentData.inventario = match.inventario;
+
+    // Sugerir familia si el inventario la trae
+    if (match.familia && getAllFamilias().includes(match.familia)) {
+      currentData.familia = match.familia;
+    }
+
+    const sectorOK = !match.sector || match.sector === currentData.sector;
+    const sectorWarn = !sectorOK
+      ? `<div style="background: #fef3c7; color: #92400e; padding: 8px 10px; border-radius: 6px; font-size: 12px; margin: 8px 0;">⚠ Según el inventario, este equipo está en <b>${match.sector}</b>, no en <b>${currentData.sector}</b>. Verificá antes de continuar.</div>`
+      : '';
+    container.innerHTML = `
+      <div class="inv-match">
+        <h4>✓ Equipo encontrado en el inventario</h4>
+        <div class="row"><span class="k">Marca / Modelo</span><span class="v">${match.marca || '—'}</span></div>
+        <div class="row"><span class="k">Prestador</span><span class="v">${match.prestador || '—'}</span></div>
+        <div class="row"><span class="k">Sector esperado</span><span class="v">${match.sector || '—'}</span></div>
+        <div class="row"><span class="k">Sala esperada</span><span class="v">${match.area || '—'}</span></div>
+        ${match.familia ? `<div class="row"><span class="k">Familia</span><span class="v">${match.familia}</span></div>` : ''}
+        ${sectorWarn}
+        <div class="actions">
+          <button class="btn-confirm" onclick="confirmLocation(true)">✓ Ubicación correcta</button>
+          <button class="btn-change" onclick="confirmLocation(false)">Cambiar ubicación</button>
+        </div>
+      </div>
+    `;
+  } else {
+    currentData.invMatch = null;
+    const invCount = getInventoryCount();
+    const msg = invCount === 0
+      ? `<div style="font-size: 13px; margin-top: 6px; line-height: 1.5;">
+          <b>El inventario no está sincronizado en este celular.</b><br>
+          Andá a <b>⚙ Configuración → Sincronizar inventario</b>.
+          <br><br>Mientras tanto podés completar los datos del equipo a mano más abajo ↓
+        </div>`
+      : `<div style="font-size: 13px; margin-top: 6px; line-height: 1.5;">
+          Este número de serie no figura en el inventario (${invCount} equipos cargados).
+          <br><b>Completá los datos del equipo a mano más abajo ↓</b>
+        </div>`;
+    container.innerHTML = `
+      <div class="inv-match not-found">
+        <h4>⚠ Equipo no encontrado</h4>
+        ${msg}
+      </div>
+    `;
+    // Resaltar visualmente los campos que el técnico tiene que completar
+    setTimeout(() => {
+      const ef = document.getElementById('equipo-fields');
+      if (ef) ef.classList.add('needs-manual');
+    }, 50);
+  }
+
+  renderEquipoFields();
+  if (currentData.familia) renderChecklist();
+  updateProgress();
+}
+
+function confirmLocation(ok) {
+  currentData.locConfirmed = ok;
+  if (ok) {
+    toast('Ubicación confirmada', 'success');
+  }
+  renderEquipoFields();
+  updateProgress();
+}
+
+// ============================================================
+// CAMPOS DE EQUIPO (se re-renderizan según haya match o no)
+// ============================================================
+function renderEquipoFields() {
+  const f = FORMS[currentForm];
+  const c = document.getElementById('equipo-fields');
+  if (!c) return;
+
+  const hasMatch = !!currentData.invMatch;
+  const locked = hasMatch && currentData.locConfirmed === true;
+
+  let html = `
+    <div class="field"><label>Marca / Modelo</label><input type="text" data-k="marca" value="${currentData.marca}" ${locked?'readonly':''}></div>
+    <div class="field"><label>Prestador <span class="required">*</span></label>
+      <select data-k="prestador" ${locked?'disabled':''}>
+        <option value="">— Seleccionar —</option>
+        ${PRESTADORES.map(p => `<option value="${p}" ${currentData.prestador===p?'selected':''}>${p}</option>`).join('')}
+      </select>
+    </div>
+    <div class="field"><label>Familia de equipo <span class="required">*</span></label>
+      <select data-k="familia" onchange="onFamiliaChange(this.value)">
+        <option value="">— Seleccionar —</option>
+        ${f.familias.map(fam => `<option value="${fam}" ${currentData.familia===fam?'selected':''}>${fam}</option>`).join('')}
+      </select>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Sector</label>
+        <input type="text" value="${currentData.sector}" readonly style="background: var(--primary-soft); font-weight: 600; color: var(--primary);">
+      </div>
+      <div class="field"><label>Sala / Ubicación <span class="required">*</span></label>
+        <input type="text" data-k="area" value="${currentData.area}" placeholder="Q3, UT142D, QQS020…" ${locked?'readonly':''}>
+      </div>
+    </div>
+  `;
+
+  c.innerHTML = html;
+
+  c.querySelectorAll('[data-k]').forEach(el => {
+    el.addEventListener('input', e => { currentData[e.target.dataset.k] = e.target.value; updateProgress(); });
+    el.addEventListener('change', e => { currentData[e.target.dataset.k] = e.target.value; updateProgress(); });
+  });
+}
+
+function onFamiliaChange(fam) {
+  currentData.familia = fam;
+  // Si cambia la familia, resetear los checks (porque ahora son ítems distintos)
+  currentData.checks = {};
+  currentData.extras = {};
+  renderChecklist();
+  updateProgress();
+}
+
+// ============================================================
+// CHECKLIST DINÁMICO
+// ============================================================
+function getChecklistForFamilia(familia) {
+  // 1. Match exacto
+  if (CHECKLISTS[familia]) return CHECKLISTS[familia];
+
+  // 2. "Otro" → match al más parecido del formulario (fallback genérico)
+  return CHECKLISTS['Genérico'];
+}
+
+function renderChecklist() {
+  const c = document.getElementById('checklist-container');
+  if (!c) return;
+  if (!currentData.familia) {
+    c.innerHTML = `<div class="empty" style="padding: 30px 20px; background: var(--bg-elevated); border: 1px dashed var(--line); border-radius: var(--radius);">
+      <div class="icon">📋</div>
+      Seleccioná la familia del equipo arriba para ver el checklist específico.
+    </div>`;
+    return;
+  }
+
+  const cl = getChecklistForFamilia(currentData.familia);
+  const items = cl.items;
+  let done = 0;
+  items.forEach((_, i) => { if (currentData.checks['i' + i]) done++; });
+
+  let html = `<div class="check-group">
+    <div class="check-group-header">
+      <span>${cl.titulo}</span>
+      <span class="progress" id="checklist-progress">${done} / ${items.length}</span>
+    </div>`;
+
+  items.forEach((item, i) => {
+    const k = 'i' + i;
+    const v = currentData.checks[k] || '';
+    html += `<div class="check-item">
+      <div class="label">${item}</div>
+      <div class="check-options" data-key="${k}">
+        ${['SI','NO','N/V'].map(o => `<button type="button" data-val="${o}" class="${v===o?'active':''}" onclick="setCheck('${k}','${o}', this)">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Campos extras del checklist (temp, autonomía, etc.)
+  if (cl.extras) {
+    html += `<div class="check-group">
+      <div class="check-group-header"><span>Datos adicionales</span></div>
+      <div style="padding: 12px 14px;">`;
+    cl.extras.forEach(ex => {
+      const v = currentData.extras[ex.key] || '';
+      html += `<div class="field"><label>${ex.label}</label><input type="${ex.type}" data-ex="${ex.key}" value="${v}"></div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  c.innerHTML = html;
+
+  c.querySelectorAll('[data-ex]').forEach(el => {
+    el.addEventListener('input', e => { currentData.extras[e.target.dataset.ex] = e.target.value; });
+  });
+}
+
+function setCheck(key, val, btn) {
+  currentData.checks[key] = val;
+  btn.parentElement.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+  const cl = getChecklistForFamilia(currentData.familia);
+  let done = 0;
+  cl.items.forEach((_, i) => { if (currentData.checks['i' + i]) done++; });
+  const pe = document.getElementById('checklist-progress');
+  if (pe) pe.textContent = `${done} / ${cl.items.length}`;
+  updateProgress();
+}
+
+function toggleAccion(a, el) {
+  const i = currentData.acciones.indexOf(a);
+  if (i > -1) currentData.acciones.splice(i, 1);
+  else currentData.acciones.push(a);
+  el.classList.toggle('active');
+}
+
+function setEstado(key, btn) {
+  currentData.estado = key;
+  btn.parentElement.querySelectorAll('.estado-btn').forEach(b => b.classList.toggle('active', b === btn));
+  updateProgress();
+}
+
+function updateProgress() {
+  const required = ['fecha', 'tecnico', 'tipo_intervencion', 'serie', 'prestador', 'familia', 'sector', 'area', 'estado', 'firma'];
+  const done = required.filter(k => currentData[k]).length;
+  let totalChecks = 0, checksDone = 0;
+  if (currentData.familia) {
+    const cl = getChecklistForFamilia(currentData.familia);
+    totalChecks = cl.items.length;
+    checksDone = Object.values(currentData.checks).filter(Boolean).length;
+  }
+  const pct = totalChecks > 0
+    ? Math.round(((done / required.length) * 0.4 + (checksDone / totalChecks) * 0.6) * 100)
+    : Math.round((done / required.length) * 40);
+  document.getElementById('form-progress').textContent = pct + '%';
+}
+
+function confirmExit() {
+  if (confirm('¿Salir sin guardar? Se perderán los datos cargados.')) navTo('home');
+}
+
+// ============================================================
+// INVENTARIO LOCAL
+// ============================================================
+function getLocalInventory() {
+  try { return JSON.parse(localStorage.getItem('bioing_inventory') || '[]'); }
+  catch { return []; }
+}
+function getInventoryCount() { return getLocalInventory().length; }
+function getAllFamilias() {
+  const all = [];
+  Object.values(FORMS).forEach(f => f.familias.forEach(x => all.push(x)));
+  return all;
+}
+
+function findInLocalInventory(serie) {
+  const inv = getLocalInventory();
+  const s = serie.trim().toUpperCase();
+  return inv.find(e => (e.serie || '').toUpperCase() === s) || null;
+}
+
+async function syncInventory() {
+  const url = localStorage.getItem('bioing_url');
+  if (!url) { toast('Configurá la URL primero', 'error'); return; }
+  toast('Sincronizando inventario...');
+  try {
+    const res = await fetch(url + '?action=inventory');
+    const data = await res.json();
+    if (data.ok && Array.isArray(data.items)) {
+      localStorage.setItem('bioing_inventory', JSON.stringify(data.items));
+      document.getElementById('inv-count').textContent = data.items.length;
+      toast(`${data.items.length} equipos sincronizados`, 'success');
+    } else {
+      toast('Respuesta inesperada', 'error');
+    }
+  } catch (e) {
+    toast('Error al sincronizar', 'error');
+  }
+}
+
+// ============================================================
+// SUBMIT
+// ============================================================
+async function submitInspection() {
+  const required = ['fecha', 'tecnico', 'tipo_intervencion', 'serie', 'prestador', 'familia', 'sector', 'area', 'estado', 'firma'];
+  const missing = required.filter(k => !currentData[k]);
+  if (missing.length) {
+    toast('Faltan: ' + missing.join(', '), 'error');
+    return;
+  }
+  const url = localStorage.getItem('bioing_url');
+  if (!url) { toast('Configurá la URL primero', 'error'); return; }
+
+  const payload = buildPayload(currentData);
+  const btn = document.getElementById('btn-submit');
+  const txt = document.getElementById('submit-text');
+  btn.disabled = true;
+  txt.innerHTML = '<span class="spinner"></span> Enviando...';
+
+  try {
+    savePending(payload);
+    const ok = await sendToSheet(url, payload);
+    if (ok) {
+      removePending(payload._id);
+      toast('Inspección guardada', 'success');
+      setTimeout(() => navTo('home'), 600);
+    } else {
+      toast('Sin conexión. Se enviará después', 'error');
+      setTimeout(() => navTo('home'), 1200);
+    }
+  } catch (e) {
+    toast('Error al enviar', 'error');
+  } finally {
+    btn.disabled = false;
+    txt.textContent = 'Guardar y enviar';
+  }
+}
+
+function buildPayload(d) {
+  const checks = {};
+  const cl = getChecklistForFamilia(d.familia);
+  cl.items.forEach((item, i) => {
+    checks[item] = d.checks['i' + i] || '';
+  });
+  return {
+    _id: 'INS-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+    formKey: d.formKey,
+    formName: d.formName,
+    timestamp: new Date().toISOString(),
+    fecha: d.fecha,
+    tecnico: d.tecnico,
+    tipo_intervencion: d.tipo_intervencion,
+    serie: d.serie,
+    marca: d.marca,
+    prestador: d.prestador,
+    familia: d.familia,
+    sector: d.sector,
+    area: d.area,
+    inventario: d.inventario,
+    ubicacion_confirmada: d.locConfirmed === true ? 'SI' : (d.locConfirmed === false ? 'MODIFICADA' : ''),
+    extras: d.extras,
+    checks,
+    acciones: d.acciones.join(' | '),
+    estado: ESTADOS.find(e => e.key === d.estado)?.label || d.estado,
+    estado_key: d.estado,
+    observaciones: d.observaciones,
+    proxima: d.proxima,
+    firma: d.firma
+  };
+}
+
+async function sendToSheet(url, payload) {
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+      redirect: 'follow'
+    });
+    const data = await res.json();
+    return data.ok === true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// ============================================================
+// PERSISTENCIA
+// ============================================================
+function savePending(p) {
+  const list = getPending();
+  list.push(p);
+  localStorage.setItem('bioing_pending', JSON.stringify(list));
+  saveHistory(p);
+}
+function getPending() { try { return JSON.parse(localStorage.getItem('bioing_pending') || '[]'); } catch { return []; } }
+function removePending(id) {
+  const list = getPending().filter(p => p._id !== id);
+  localStorage.setItem('bioing_pending', JSON.stringify(list));
+}
+function saveHistory(p) {
+  const list = JSON.parse(localStorage.getItem('bioing_history') || '[]');
+  list.unshift(p);
+  if (list.length > 100) list.length = 100;
+  localStorage.setItem('bioing_history', JSON.stringify(list));
+}
+
+async function resyncPending() {
+  const url = localStorage.getItem('bioing_url');
+  if (!url) { toast('Falta configurar URL', 'error'); return; }
+  const list = getPending();
+  if (!list.length) { toast('Sin pendientes', 'success'); return; }
+  let sent = 0;
+  for (const p of list) {
+    if (await sendToSheet(url, p)) { removePending(p._id); sent++; }
+  }
+  toast(`${sent} de ${list.length} enviadas`, sent === list.length ? 'success' : 'error');
+  document.getElementById('pending-count').textContent = getPending().length;
+}
+
+// ============================================================
+// CONFIG
+// ============================================================
+function saveConfig() {
+  const url = document.getElementById('cfg-url').value.trim();
+  const tec = document.getElementById('cfg-tecnico').value.trim();
+  if (url) localStorage.setItem('bioing_url', url);
+  if (tec) localStorage.setItem('bioing_tecnico', tec);
+  toast('Configuración guardada', 'success');
+}
+
+async function testConnection() {
+  const url = document.getElementById('cfg-url').value.trim();
+  if (!url) { toast('Ingresá una URL', 'error'); return; }
+  try {
+    const res = await fetch(url + '?ping=1');
+    const data = await res.json();
+    if (data.ok) toast('Conexión OK · ' + (data.sheet || ''), 'success');
+    else toast('Respuesta inesperada', 'error');
+  } catch (e) {
+    toast('No se pudo conectar', 'error');
+  }
+}
+
+// ============================================================
+// HISTORIAL
+// ============================================================
+function renderHistory() {
+  const list = JSON.parse(localStorage.getItem('bioing_history') || '[]');
+  const pending = getPending().map(p => p._id);
+  const el = document.getElementById('history-list');
+  if (!list.length) {
+    el.innerHTML = `<div class="empty"><div class="icon">📋</div>Sin inspecciones todavía</div>`;
+    return;
+  }
+  el.innerHTML = list.slice(0, 20).map(h => `
+    <div class="history-item">
+      <div class="status-dot ${pending.includes(h._id) ? 'pending' : (h.estado_key || 'ok')}"></div>
+      <div class="info">
+        <div class="equipo">${h.serie || 'Sin serie'} · ${h.familia || ''}</div>
+        <div class="meta">${h.fecha} · ${h.area} · ${h.formName}</div>
+      </div>
+      <div style="font-size: 10px; color: var(--ink-soft); font-family: var(--font-mono);">
+        ${pending.includes(h._id) ? 'PEND' : 'OK'}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+window.addEventListener('load', () => {
+  if (navigator.onLine && localStorage.getItem('bioing_url')) resyncPending();
+  renderHistory();
+});
+window.addEventListener('online', () => {
+  if (localStorage.getItem('bioing_url')) resyncPending();
+});
+
+// Service worker
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    self.addEventListener('install', e => self.skipWaiting());
+    self.addEventListener('activate', e => self.clients.claim());
+    self.addEventListener('fetch', e => {
+      e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+    });
+  `;
+  const swBlob = new Blob([swCode], { type: 'application/javascript' });
+  const swUrl = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swUrl).catch(() => {});
+}
+</script>
+
+</body>
+</html>
